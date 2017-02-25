@@ -28,9 +28,7 @@ void setup()
      return;
   }
   else
-    Serial.println("SD Card success");
-  
-
+  Serial.println("SD Card success");
 
   Serial.println();
   Serial.println("Press s to Start the test");
@@ -80,25 +78,6 @@ if(Serial.available())
     char ch = Serial.read();
     if(ch == 's')
     {
-////////
-//BIG Difference test here
-//
-//
-//
-//////// 
-  /*  float Count_Salinity = analogRead(A0);
-  float Voltage = Count_Salinity / 1023 * 5.0;// convert from count to raw voltage
-  float SensorReading_Salinity = Intercept_Salinity + Voltage * Slope_Salinity; //converts voltage to sensor reading
-  
-  float Count_pH = analogRead(A2); 
-  float Voltage_pH = Count_pH / 1023 * 5.0;// convert from count to raw voltage
-  float SensorReading_pH = Intercept_pH + Voltage_pH * Slope_pH; 
-  delay(TimeBetweenReadings);// delay in between reads for stability
-  ReadingNumber++;
-  */
-//////END of copy
-
-
       if (SD.exists("DisTest.txt"))
       {
         SD.remove("DisTest.txt");
@@ -138,23 +117,8 @@ if(Serial.available())
           myFile.print(", ");
           myFile.println(SensorReading_pH);
           myFile.close();
-          
-      
         }
-
-      }
-      
+      }  
     }
-  }
-  
+  }  
 }
-
-
-//void loop()
-//{
-  
-//}
-
-
-
-    
