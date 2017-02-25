@@ -1,0 +1,160 @@
+#include <EEPROM.h>
+#include <SD.h>
+
+File  myFile;
+
+char Sensor[]="Vernier Salinity & pH";
+float Intercept_Salinity = 0;
+float Slope_Salinity = 16.3;
+float Intercept_pH = 16.237;
+float Slope_pH = -7.752;
+int TimeBetweenReadings = 30000; // in ms
+int ReadingNumber=0;
+int MaximumFilesPerMicroSD = 1000;
+int MaximumRecordsPerFile = 1000;
+int x = 0;
+
+ 
+/////////////////////////////////////////
+void setup() 
+{
+  
+    Serial.begin(9600);
+  
+  pinMode(53, OUTPUT);
+  if(!SD.begin(53)) 
+  {
+    Serial.println("SD Card initialization failed!");
+     return;
+  }
+  else
+    Serial.println("SD Card success");
+  
+
+
+  Serial.println();
+  Serial.println("Press s to Start the test");
+  Serial.println();
+  Serial.println();
+  Serial.println();
+  Serial.println("Vernier Sensor Test Rev 1.2");
+  Serial.print(Sensor);
+  Serial.print(" ");
+  Serial.println("Readings taken using Ardunio");
+  Serial.println("Data Set");
+  Serial.print("Time");//long name
+  Serial.print("\t"); //tab character
+  Serial.print ("Parts per Thousand"); //change to match sensor
+  Serial.print("\t");
+  Serial.println ("pH");
+  Serial.print("t");//short name
+  Serial.print("\t"); //tab character
+  Serial.println ("ppt"); //short name, change to match sensor 
+  Serial.print("seconds");//units
+  Serial.print("\t"); // tab character
+  Serial.println ("ppt"); //change to match sensor
+}
+void loop() 
+{
+float Time;
+ 
+//the print below does the division first to avoid overflows
+  Serial.print(ReadingNumber/1000.0*TimeBetweenReadings); 
+  float Count_Salinity = analogRead(A0);
+  float Voltage = Count_Salinity / 1023 * 5.0;// convert from count to raw voltage
+  float SensorReading_Salinity = Intercept_Salinity + Voltage * Slope_Salinity; //converts voltage to sensor reading
+  
+  float Count_pH = analogRead(A2); 
+  float Voltage_pH = Count_pH / 1023 * 5.0;// convert from count to raw voltage
+  float SensorReading_pH = Intercept_pH + Voltage_pH * Slope_pH; 
+  Serial.print("\t"); // tab character
+  Serial.print(SensorReading_Salinity);
+  Serial.print("\t");
+  Serial.println(SensorReading_pH);
+  delay(TimeBetweenReadings);// delay in between reads for stability
+  ReadingNumber++;
+
+//This is where I deviate//
+if(Serial.available())
+  {
+    char ch = Serial.read();
+    if(ch == 's')
+    {
+////////
+//BIG Difference test here
+//
+//
+//
+//////// 
+  /*  float Count_Salinity = analogRead(A0);
+  float Voltage = Count_Salinity / 1023 * 5.0;// convert from count to raw voltage
+  float SensorReading_Salinity = Intercept_Salinity + Voltage * Slope_Salinity; //converts voltage to sensor reading
+  
+  float Count_pH = analogRead(A2); 
+  float Voltage_pH = Count_pH / 1023 * 5.0;// convert from count to raw voltage
+  float SensorReading_pH = Intercept_pH + Voltage_pH * Slope_pH; 
+  delay(TimeBetweenReadings);// delay in between reads for stability
+  ReadingNumber++;
+  */
+//////END of copy
+
+
+      if (SD.exists("DisTest.txt"))
+      {
+        SD.remove("DisTest.txt");
+        #if DEBUG
+          Serial.println("Removed existing file.");
+        #endif
+      }
+      myFile = SD.open("DisTest.txt", FILE_WRITE);
+      #if DEBUG
+      Serial.println("Created new file");
+      #endif 
+      
+   //   WriteFirstDataRecord();
+   //   myFile.close();
+   //    String fileName = "Record";
+      
+      for(int fc = 1; fc <= MaximumFilesPerMicroSD; fc++)
+      {
+
+        for( x = 0; x < MaximumRecordsPerFile; x++)
+        {
+          
+           float Count_Salinity = analogRead(A0);
+           float Voltage = Count_Salinity / 1023 * 5.0;// convert from count to raw voltage
+           float SensorReading_Salinity = Intercept_Salinity + Voltage * Slope_Salinity; //converts voltage to sensor reading
+  
+           float Count_pH = analogRead(A2); 
+           float Voltage_pH = Count_pH / 1023 * 5.0;// convert from count to raw voltage
+           float SensorReading_pH = Intercept_pH + Voltage_pH * Slope_pH; 
+           delay(TimeBetweenReadings);// delay in between reads for stability
+           ReadingNumber++;
+
+  
+         delay (TimeBetweenReadings);
+          myFile = SD.open("DisTest.txt", FILE_WRITE);
+          myFile.print(SensorReading_Salinity);
+          myFile.print(", ");
+          myFile.println(SensorReading_pH);
+          myFile.close();
+          
+      
+        }
+
+      }
+      
+    }
+  }
+  
+}
+
+
+//void loop()
+//{
+  
+//}
+
+
+
+    
