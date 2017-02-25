@@ -102,23 +102,6 @@ void setup()
   Serial.println("initialization done.");
 #endif
 
-  // 'Help' block at start of program.
-  Serial.println(); 
-  Serial.println("Micro SD File Test Application.  Rev 8.");   
-  Serial.println();  
-  Serial.println("Command Line Usage:");
-  Serial.println("c 'filename' 'contents' - Create a file named 'filename' and place the text 'contents' into the file");  
-  Serial.println("d 'filename' - Delete a file named 'filename'");
-  Serial.println("l - List all files on drive");
-  Serial.println("r 'filename' - Reveal file contents");
-  Serial.println();  
-  Serial.println("Rules:");
-  Serial.println("All 'filenames' shall be less than 8.3 characters."); 
-  Serial.println("All 'contents' shall be less that 64 characters."); 
-  Serial.println("Only one command line string per user entry."); 
-  Serial.println("Flat filesystem.  No directories supported."); 
-  Serial.println("Serial Monitor must be configured with Newline on."); 
-  Serial.println();  
   
   RunTimeVariablesReset();
 
